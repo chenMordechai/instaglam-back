@@ -36,7 +36,6 @@ export async function getStoryById(req, res) {
 export async function addStory(req, res) {
     console.log('addStory:')
     // const { loggedinUser } = req
-    // console.log('addStory')
     // console.log('loggedinUser:', loggedinUser)
     // if (!loggedinUser.isAdmin) return
 

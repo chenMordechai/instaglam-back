@@ -30,11 +30,13 @@ export async function getPostById(req, res) {
 }
 
 export async function addPost(req, res) {
-    // const { loggedinUser } = req
+    const { loggedinUser } = req
+    console.log('loggedinUser:', loggedinUser)
     try {
         const post = req.body // txt,aboutToyId
         // // post.byUserId = '656c29766b05f4baadc8ca9d'
-        // post.byUserId = loggedinUser._id
+        post.by = loggedinUser
+        post.createdAt = Date.now()
         const addedPost = await postService.add(post)
 
         // prepare the updated post for sending out

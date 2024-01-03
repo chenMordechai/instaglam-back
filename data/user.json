@@ -1,32 +1,226 @@
-{
-    "_id": "u101",
-    "username": "Muko",
-    "imgUrl": "https://res.cloudinary.com/shaishar9/image/upload/v1590850482/j1glw3c9jsoz2py0miol.jpg",
-    "fullname": "Muki Muka",
-    "password": "123",
-    "createdAt": 1651504622095,
-    "following": [
-        {
-            "_id": "u102",
-            "username": "Ulash",
-            "imgUrl": "https://res.cloudinary.com/mistertoysss/image/upload/v1648414285/funday%20must/photo-1618085222100-93f0eecad0aa_fuisxo.jpg",
-            "fullname": "Ulash Ulashi"
-        }
-    ],
-    "followers": [
-        {
-            "_id": "u102",
-            "username": "Ulash",
-            "imgUrl": "https://res.cloudinary.com/mistertoysss/image/upload/v1648414285/funday%20must/photo-1618085222100-93f0eecad0aa_fuisxo.jpg",
-            "fullname": "Ulash Ulashi"
-        }
-    ],
-    "savedPostIds": [
-        "p101"
-    ],
-    "highlights": [],
-    "posts": [
-        "p101",
-        "p102"
-    ]
-}
+[
+    {
+        "username": "chen_mordechai1",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+        "fullname": "Chen Mordechai",
+        "description": "",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "postsMini": [
+            {
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "likeCount": 48,
+                "commentCount": 21
+            },
+            {
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "likeCount": 48,
+                "commentCount": 21
+            },
+            {
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "likeCount": 48,
+                "commentCount": 21
+            }
+        ],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [
+            {
+                "_id": "h101",
+                "name": "המתוקים שלי",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "imgs": [
+                    {
+                        "imgUrl": "",
+                        "createdAt": 1651504625095
+                    }
+                ]
+            },
+            {
+                "_id": "h102",
+                "name": "העבודה שלי",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "imgs": [
+                    {
+                        "imgUrl": "",
+                        "createdAt": 1651504625095
+                    }
+                ]
+            },
+            {
+                "_id": "h103",
+                "name": "החיים שלי",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+                "imgs": [
+                    {
+                        "imgUrl": "",
+                        "createdAt": 1651504625095
+                    }
+                ]
+            }
+        ],
+        "stories": [
+            {
+                "id": "s101",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "adi.biram",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703789653/WhatsApp_Image_2023-12-25_at_15.42.14_qvcoxj.jpg",
+        "fullname": "Adi Biram",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "postsMini": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "stories": [
+            {
+                "id": "s102",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "moriyawinett",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703789862/file_qso6bt.jpg",
+        "fullname": "Moriya Winett",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "studio_manina.design",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703797608/1acf2219-2ded-42e1-a006-99d68b3e5f6e_mewdtw.jpg",
+        "fullname": "Maayan Neeman",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "morbiar",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703799147/aea8fe4f-ad92-4110-9116-beb1c511705a_m8tqpq.jpg",
+        "fullname": "Mor Biar",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "savedPostIds": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "zviamir",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703800910/WhatsApp_Image_2023-12-28_at_23.55.27_keii9v.jpg",
+        "fullname": "Zviya Amir",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "meirav.simon",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703800911/WhatsApp_Image_2023-12-28_at_23.57.52_bqrad9.jpg",
+        "fullname": "Meirav Simon",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "rotemreif",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703800910/WhatsApp_Image_2023-12-28_at_23.58.57_rtake9.jpg",
+        "fullname": "Rotem Reif",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    },
+    {
+        "username": "tal.amiel",
+        "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703800912/WhatsApp_Image_2023-12-28_at_23.55.59_ve9lcl.jpg",
+        "fullname": "Tal Amiel",
+        "password": "123",
+        "createdAt": 1651504622095,
+        "following": [],
+        "followers": [],
+        "taggedPostsMini": [],
+        "savedPostsMini": [],
+        "highlights": [],
+        "postsMini": [],
+        "stories": [
+            {
+                "id": "s103",
+                "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg"
+            }
+        ]
+    }
+]
+// " 👨‍👧‍👦אמא לשלושה מתוקים 
+// 💻מתכנתת בנשמה
+// ❤אוהבת את החיים"

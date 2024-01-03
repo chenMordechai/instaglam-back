@@ -7,10 +7,11 @@ const { ObjectId } = mongodb
 export const userService = {
     query,
     getById,
-    // getByUsername,
+    getByUsername,
     update,
+    updateImg,
     remove,
-    // add
+    add
 }
 
 async function query(filterBy = {}) {
@@ -36,12 +37,22 @@ async function query(filterBy = {}) {
 async function getById(userId) {
     try {
         const collection = await dbService.getCollection('user')
-        const user = await collection.findOne({ _id:userId })
-        // const user = await collection.findOne({ _id: ObjectId(userId) })
+        const user = await collection.findOne({ _id:new ObjectId(userId) })
         delete user.password
         return user
     } catch (err) {
         logger.error(`while finding user ${userId}`, err)
+        throw err
+    }
+}
+
+async function getByUsername(username) {
+    try {
+        const collection = await dbService.getCollection('user')
+        const user = await collection.findOne({ username })
+        return user
+    } catch (err) {
+        logger.error(`while finding user ${username}`, err)
         throw err
     }
 }
@@ -59,10 +70,12 @@ async function remove(userId) {
 async function update(user) {
     try {
         // peek only updatable fields!
+        // const {_id,userName}
         const userToSave = {
             _id: new ObjectId(user._id),
             username: user.username,
-            // fullname: user.fullname,
+            fullname: user.fullname,
+            // imgUrl: user.imgUrl
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -72,28 +85,55 @@ async function update(user) {
         throw err
     }
 }
+async function updateImg(user) {
+    try {
+        // peek only updatable fields!
+        const userToSave = {
+            _id: new ObjectId(user._id),
+            imgUrl: user.imgUrl
+        }
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: userToSave._id }, { $set: {imgUrl:userToSave.imgUrl} })
+        return userToSave
+    } catch (err) {
+        logger.error(`cannot update user ${user._id}`, err)
+        throw err
+    }
+}
 
-// async function add(user) {
-//     try {
-//         // Validate that there are no such user:
-//         const existUser = await getByUsername(user.username)
-//         if (existUser) throw new Error('Username taken')
+async function add(user) {
+    try {
+        // Validate that there are no such user:
+        console.log('user.username:', user.username)
+        const existUser = await getByUsername(user.username)
+        console.log('existUser:', existUser)
+        if (existUser) throw new Error('Username taken')
 
-//         // peek only updatable fields!
-//         const userToAdd = {
-//             username: user.username,
-//             password: user.password,
-//             fullname: user.fullname,
-//             isAdmin:user.isAdmin
-//         }
-//         const collection = await dbService.getCollection('user')
-//         await collection.insertOne(userToAdd)
-//         return userToAdd
-//     } catch (err) {
-//         logger.error('cannot insert user', err)
-//         throw err
-//     }
-// }
+        // peek only updatable fields!
+        const userToAdd = {
+            username: user.username,
+            password: user.password,
+            fullname: user.fullname,
+            email:user.email,
+            imgUrl:'https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1704182274/user_afklid.jpg',
+            createdAt:Date.now(),
+            following:[],
+            followers:[],
+            savedPostsMini:[],
+            postsMini:[],
+            tagedPostsMini:[],
+            highlights:[],
+            stories:[],
+            description:'',            
+        }
+        const collection = await dbService.getCollection('user')
+        await collection.insertOne(userToAdd)
+        return userToAdd
+    } catch (err) {
+        logger.error('cannot insert user', err)
+        throw err
+    }
+}
 
 function _buildCriteria(filterBy) {
     const criteria = {}

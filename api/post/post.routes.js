@@ -12,7 +12,7 @@ postRoutes.get('/', log, getPosts)
 // work
 postRoutes.get('/:id', getPostById)
 // work
-postRoutes.post('/', addPost)
+postRoutes.post('/',requireAuth, addPost)
 // work
 postRoutes.put('/:id', updatePost)
 // work
