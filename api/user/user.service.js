@@ -10,6 +10,7 @@ export const userService = {
     getByUsername,
     update,
     updateImg,
+    updatePost,
     remove,
     add
 }
@@ -82,6 +83,20 @@ async function update(user) {
         return userToSave
     } catch (err) {
         logger.error(`cannot update user ${user._id}`, err)
+        throw err
+    }
+}
+async function updatePost(postMini,userId) {
+
+    console.log('userId:', userId)
+    try {
+       
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { postsMini: postMini } })
+
+        return postMini
+    } catch (err) {
+        logger.error(`cannot update user ${userId}`, err)
         throw err
     }
 }

@@ -1,5 +1,8 @@
 import { postService } from './post.service.js'
+import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
+import mongodb from 'mongodb'
+const { ObjectId } = mongodb
 
 export async function getPosts(req, res) {
     try {
@@ -33,12 +36,20 @@ export async function addPost(req, res) {
     const { loggedinUser } = req
     console.log('loggedinUser:', loggedinUser)
     try {
-        const post = req.body // txt,aboutToyId
+        const post = req.body 
         // // post.byUserId = '656c29766b05f4baadc8ca9d'
         post.by = loggedinUser
         post.createdAt = Date.now()
         const addedPost = await postService.add(post)
-
+        
+        const postMini = {
+            commentCount:post.commentCount,
+            imgUrl : post.imgUrl,
+            likeCount : post.likeCount,
+            _id : new ObjectId(addedPost._id) 
+        }
+        const updatedUser = await userService.updatePost(postMini , post.by._id)
+        
         // prepare the updated post for sending out
         // addedPost.aboutToy = await toyService.getById(post.aboutToyId)
 
