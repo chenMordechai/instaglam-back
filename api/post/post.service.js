@@ -12,7 +12,8 @@ export const postService = {
     update,
     remove,
     addLikePost,
-    removeLikePost
+    removeLikePost,
+    addComment
 }
 
 async function query(filterBy = {}, sortBy = {}) {
@@ -182,8 +183,6 @@ async function remove(postId) {
     }
 }
 
-
-
 async function addLikePost(postId, likedBy) {
     try {
         // msg.id = utilService.makeId()
@@ -207,6 +206,16 @@ async function removeLikePost(postId, likeById) {
     }
 }
 
+async function addComment(postId, comment) {
+    try {
+        const collection = await dbService.getCollection('post')
+        await collection.updateOne({ _id: new ObjectId(postId) }, { $push: { comments: comment } })
+        return comment
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
+}
 
 
 

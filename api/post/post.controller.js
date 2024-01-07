@@ -3,6 +3,7 @@ import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
 import mongodb from 'mongodb'
 import { log } from '../../middlewares/logger.middleware.js'
+import { utilService } from '../../services/util.service.js'
 const { ObjectId } = mongodb
 
 export async function getPosts(req, res) {
@@ -100,7 +101,6 @@ export async function addLikePost(req, res) {
 }
 
 export async function removeLikePost(req, res) {
-    // const { loggedinUser } = req
     try {
         const postId = req.params.id
         const { likeById } = req.params
@@ -112,5 +112,28 @@ export async function removeLikePost(req, res) {
         res.status(500).send({ err: 'Failed to remove like post' })
     }
 }
+
+export async function addComment(req, res) {
+    const { loggedinUser } = req
+    try {
+        const postId = req.params.id
+        console.log('req.body:', req.body)
+        const comment = {
+            _id: utilService.makeId(),
+            txt: req.body.txt,
+            by: loggedinUser,
+            createdAt: Date.now(),
+            likedBy: []
+        }
+
+        comment.by._id = new ObjectId(comment.by._id)
+        const addedComment = await postService.addComment(postId, comment)
+        res.json(addedComment)
+    } catch (err) {
+        logger.error('Failed to add Like Post', err)
+        res.status(500).send({ err: 'Failed to add Like Post' })
+    }
+}
+
 
 
