@@ -36,20 +36,21 @@ export async function addPost(req, res) {
     const { loggedinUser } = req
     console.log('loggedinUser:', loggedinUser)
     try {
-        const post = req.body 
+        const post = req.body
         // // post.byUserId = '656c29766b05f4baadc8ca9d'
         post.by = loggedinUser
         post.createdAt = Date.now()
         const addedPost = await postService.add(post)
-        
+
         const postMini = {
-            commentCount:post.commentCount,
-            imgUrl : post.imgUrl,
-            likeCount : post.likeCount,
-            _id : new ObjectId(addedPost._id) 
+            commentCount: post.commentCount,
+            imgUrl: post.imgUrl,
+            likeCount: post.likeCount,
+            _id: new ObjectId(addedPost._id),
+            imgFilter: post.imgFilter
         }
-        const updatedUser = await userService.updatePost(postMini , post.by._id)
-        
+        const updatedUser = await userService.updatePost(postMini, post.by._id)
+
         // prepare the updated post for sending out
         // addedPost.aboutToy = await toyService.getById(post.aboutToyId)
 
@@ -78,7 +79,7 @@ export async function updatePost(req, res) {
 
     console.log('updatePost')
     try {
-       
+
         const post = req.body
         console.log('post:', post)
         const updatedStory = await postService.update(post)
@@ -101,6 +102,37 @@ export async function removePost(req, res) {
     }
 }
 
+export async function addLikePost(req, res) {
+    console.log('addLikePost:')
+    const { loggedinUser } = req
+    console.log('loggedin user:', loggedinUser)
+    // const { _id, fullname } = loggedinUser
+    try {
+        const postId = req.params.id
+        const likedBy = { ...loggedinUser }
+        likedBy._id = new ObjectId(likedBy._id)
+        const likedByPost = await postService.addLikePost(postId, likedBy)
+        console.log('likedByPost:', likedByPost)
+        res.json(likedByPost)
+    } catch (err) {
+        logger.error('Failed to add Like Post', err)
+        res.status(500).send({ err: 'Failed to add Like Post' })
+    }
+}
 
+export async function removeLikePost(req, res) {
+    // const { loggedinUser } = req
+    try {
+        const postId = req.params.id
+        console.log('req.params:', req.params)
+        const { likeById } = req.params
+
+        const removedId = await postService.removeLikePost(postId, likeById)
+        res.send(removedId)
+    } catch (err) {
+        logger.error('Failed to remove like post', err)
+        res.status(500).send({ err: 'Failed to remove like post' })
+    }
+}
 
 

@@ -10,7 +10,9 @@ export const postService = {
     getById,
     add,
     update,
-    remove
+    remove,
+    addLikePost,
+    removeLikePost
 }
 
 async function query(filterBy = {}, sortBy = {}) {
@@ -62,7 +64,7 @@ async function query(filterBy = {}, sortBy = {}) {
         //     delete post.aboutToyId
         //     return post
         // })
-        return posts
+        return posts.reverse()
 
     } catch (err) {
         logger.error('cannot find posts', err)
@@ -88,8 +90,7 @@ async function getById(postId) {
     console.log('getById', postId)
     try {
         const collection = await dbService.getCollection('post')
-        const post = await collection.findOne({ _id: postId })
-        // const post = await collection.findOne({ _id: new ObjectId(postId) })
+        const post = await collection.findOne({ _id: new ObjectId(postId) })
         console.log('post:', post)
         return post
         // var posts = await collection.aggregate([
@@ -105,21 +106,21 @@ async function getById(postId) {
         //             as: 'byUser'
         //         }
         //     },
-            // {
-            //     $unwind: '$byUser'
-            // },
-            // {
-            //     $lookup:
-            //     {
-            //         localField: 'aboutToyId',
-            //         from: 'toy',
-            //         foreignField: '_id',
-            //         as: 'aboutToy'
-            //     }
-            // },
-            // {
-            //     $unwind: '$aboutToy'
-            // }
+        // {
+        //     $unwind: '$byUser'
+        // },
+        // {
+        //     $lookup:
+        //     {
+        //         localField: 'aboutToyId',
+        //         from: 'toy',
+        //         foreignField: '_id',
+        //         as: 'aboutToy'
+        //     }
+        // },
+        // {
+        //     $unwind: '$aboutToy'
+        // }
         // ]).toArray()
         // console.log('posts:', posts)
         // posts = posts.map(post => {
@@ -141,7 +142,7 @@ async function add(post) {
     console.log('add')
     console.log('post:', post)
     try {
-        const postToAdd = {...post }
+        const postToAdd = { ...post }
         postToAdd.by._id = new ObjectId(postToAdd.by._id)
         // const postToAdd = {
         //     byUserId: new ObjectId(post.byUserId),
@@ -161,10 +162,7 @@ async function update(post) {
     console.log('update')
     try {
         // peek only updatable fields!
-        const postToSave = {
-            _id: new ObjectId(post._id),
-            name: post.name,
-        }
+        const postToSave = { ...post, _id: new ObjectId(post._id) }
         const collection = await dbService.getCollection('post')
         await collection.updateOne({ _id: postToSave._id }, { $set: postToSave })
         return postToSave
@@ -183,5 +181,36 @@ async function remove(postId) {
         throw err
     }
 }
+
+
+
+async function addLikePost(postId, likedBy) {
+    try {
+        // msg.id = utilService.makeId()
+        const collection = await dbService.getCollection('post')
+        await collection.updateOne({ _id: new ObjectId(postId) }, { $push: { likedBy: likedBy } })
+        return likedBy
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
+}
+
+async function removeLikePost(postId, likeById) {
+    console.log('postId:', postId)
+    console.log('likeById:', likeById)
+    try {
+        const collection = await dbService.getCollection('post')
+        const x = await collection.updateOne({ _id: new ObjectId(postId) }, { $pull: { likedBy: { _id: new ObjectId(likeById) } } })
+        console.log('x:', x)
+        return postId
+    } catch (err) {
+        logger.error(`cannot remove like post ${postId}`, err)
+        throw err
+    }
+}
+
+
+
 
 
