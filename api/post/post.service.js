@@ -197,12 +197,9 @@ async function addLikePost(postId, likedBy) {
 }
 
 async function removeLikePost(postId, likeById) {
-    console.log('postId:', postId)
-    console.log('likeById:', likeById)
     try {
         const collection = await dbService.getCollection('post')
-        const x = await collection.updateOne({ _id: new ObjectId(postId) }, { $pull: { likedBy: { _id: new ObjectId(likeById) } } })
-        console.log('x:', x)
+        await collection.updateOne({ _id: new ObjectId(postId) }, { $pull: { likedBy: { _id: new ObjectId(likeById) } } })
         return postId
     } catch (err) {
         logger.error(`cannot remove like post ${postId}`, err)

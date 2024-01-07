@@ -16,8 +16,7 @@ postRoutes.post('/', requireAuth, addPost)
 // work
 postRoutes.put('/:id', requireAuth, updatePost)
 // work
-postRoutes.delete('/:id', removePost)
-// postRoutes.delete('/:id', requireAdmin, removePost)
+postRoutes.delete('/:id', requireAuth, removePost)
 
 postRoutes.post('/:id/like', requireAuth, addLikePost)
 postRoutes.delete('/:id/like/:likeById', requireAuth, removeLikePost)

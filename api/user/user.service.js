@@ -12,6 +12,7 @@ export const userService = {
     updateImg,
     updatePost,
     remove,
+    removePost,
     add
 }
 
@@ -38,7 +39,7 @@ async function query(filterBy = {}) {
 async function getById(userId) {
     try {
         const collection = await dbService.getCollection('user')
-        const user = await collection.findOne({ _id:new ObjectId(userId) })
+        const user = await collection.findOne({ _id: new ObjectId(userId) })
         delete user.password
         return user
     } catch (err) {
@@ -86,11 +87,12 @@ async function update(user) {
         throw err
     }
 }
-async function updatePost(postMini,userId) {
+
+async function updatePost(postMini, userId) {
 
     console.log('userId:', userId)
     try {
-       
+
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { postsMini: postMini } })
 
@@ -100,6 +102,19 @@ async function updatePost(postMini,userId) {
         throw err
     }
 }
+
+async function removePost(postMiniId, userId) {
+
+    try {
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $pull: { postsMini: { _id: new ObjectId(postMiniId) } } })
+        return postMiniId
+    } catch (err) {
+        logger.error(`cannot update user ${userId}`, err)
+        throw err
+    }
+}
+
 async function updateImg(user) {
     try {
         // peek only updatable fields!
@@ -108,7 +123,7 @@ async function updateImg(user) {
             imgUrl: user.imgUrl
         }
         const collection = await dbService.getCollection('user')
-        await collection.updateOne({ _id: userToSave._id }, { $set: {imgUrl:userToSave.imgUrl} })
+        await collection.updateOne({ _id: userToSave._id }, { $set: { imgUrl: userToSave.imgUrl } })
         return userToSave
     } catch (err) {
         logger.error(`cannot update user ${user._id}`, err)
@@ -129,17 +144,17 @@ async function add(user) {
             username: user.username,
             password: user.password,
             fullname: user.fullname,
-            email:user.email,
-            imgUrl:'https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1704182274/user_afklid.jpg',
-            createdAt:Date.now(),
-            following:[],
-            followers:[],
-            savedPostsMini:[],
-            postsMini:[],
-            tagedPostsMini:[],
-            highlights:[],
-            stories:[],
-            description:'',            
+            email: user.email,
+            imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1704182274/user_afklid.jpg',
+            createdAt: Date.now(),
+            following: [],
+            followers: [],
+            savedPostsMini: [],
+            postsMini: [],
+            tagedPostsMini: [],
+            highlights: [],
+            stories: [],
+            description: '',
         }
         const collection = await dbService.getCollection('user')
         await collection.insertOne(userToAdd)
