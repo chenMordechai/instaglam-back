@@ -13,7 +13,10 @@ export const postService = {
     remove,
     addLikePost,
     removeLikePost,
-    addComment
+    addComment,
+    removeComment,
+    addLikeComment,
+    removeLikeComment
 }
 
 async function query(filterBy = {}, sortBy = {}) {
@@ -217,6 +220,42 @@ async function addComment(postId, comment) {
     }
 }
 
+async function removeComment(postId, commentId) {
+    try {
+        const collection = await dbService.getCollection('post')
+        await collection.updateOne({ _id: new ObjectId(postId) }, { $pull: { comments: { _id: commentId } } })
+        return postId
+    } catch (err) {
+        logger.error(`cannot remove comment ${postId}`, err)
+        throw err
+    }
+}
+
+async function addLikeComment(postId,commentId, likedBy) {
+    console.log('postId,commentId, likedBy:', postId,commentId, likedBy)
+    try {
+        // msg.id = utilService.makeId()
+        const collection = await dbService.getCollection('post')
+        await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $push: { 'comments.$.likedBy': likedBy } })
+      
+        return likedBy
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
+}
+
+async function removeLikeComment(postId,commentId, likeById) {
+    console.log('removeLikeComment')
+    try {
+        const collection = await dbService.getCollection('post')
+        await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $pull: { 'comments.$.likedBy':  { _id:new ObjectId( likeById )} } })
+        return postId
+    } catch (err) {
+        logger.error(`cannot remove like post ${postId}`, err)
+        throw err
+    }
+}
 
 
 
