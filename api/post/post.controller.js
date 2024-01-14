@@ -1,9 +1,9 @@
 import { postService } from './post.service.js'
 import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
-import mongodb from 'mongodb'
 import { log } from '../../middlewares/logger.middleware.js'
 import { utilService } from '../../services/util.service.js'
+import mongodb from 'mongodb'
 const { ObjectId } = mongodb
 
 export async function getPosts(req, res) {
@@ -150,14 +150,11 @@ export async function addLikeComment(req, res) {
     const { loggedinUser } = req
     try {
         const postId = req.params.id
-        console.log('postId:', postId)
         const { commentId } = req.params
-        console.log('commentId:', commentId)
         const likedBy = { ...loggedinUser }
         likedBy._id = new ObjectId(likedBy._id)
-        console.log('likedBy:', likedBy)
 
-        const likedByPost = await postService.addLikeComment(postId,commentId ,likedBy)
+        const likedByPost = await postService.addLikeComment(postId, commentId, likedBy)
         res.json(likedByPost)
     } catch (err) {
         logger.error('Failed to add Like Post', err)
@@ -168,13 +165,10 @@ export async function addLikeComment(req, res) {
 export async function removeLikeComment(req, res) {
     try {
         const postId = req.params.id
-        console.log('postId:', postId)
         const { commentId } = req.params
-        console.log('commentId:', commentId)
-        const {likeById} =req.params
-        console.log('likeById:', likeById)
+        const { likeById } = req.params
 
-        const removedId = await postService.removeLikeComment(postId,commentId, likeById)
+        const removedId = await postService.removeLikeComment(postId, commentId, likeById)
         res.send(removedId)
     } catch (err) {
         logger.error('Failed to remove like post', err)

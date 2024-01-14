@@ -13,7 +13,8 @@ export const userService = {
     updatePost,
     remove,
     removePost,
-    add
+    add,
+    addFollowing
 }
 
 async function query(filterBy = {}) {
@@ -182,4 +183,16 @@ function _buildCriteria(filterBy) {
         criteria.balance = { $gte: filterBy.minBalance }
     }
     return criteria
+}
+
+async function addFollowing(loggedinUser, miniUser) {
+    try {
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: loggedinUser._id }, { $push: { following: miniUser } })
+        await collection.updateOne({ _id: miniUser._id }, { $push: { followers: loggedinUser } })
+        return miniUser
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
 }

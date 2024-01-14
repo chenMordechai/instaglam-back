@@ -232,9 +232,7 @@ async function removeComment(postId, commentId) {
 }
 
 async function addLikeComment(postId,commentId, likedBy) {
-    console.log('postId,commentId, likedBy:', postId,commentId, likedBy)
     try {
-        // msg.id = utilService.makeId()
         const collection = await dbService.getCollection('post')
         await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $push: { 'comments.$.likedBy': likedBy } })
       
@@ -246,7 +244,6 @@ async function addLikeComment(postId,commentId, likedBy) {
 }
 
 async function removeLikeComment(postId,commentId, likeById) {
-    console.log('removeLikeComment')
     try {
         const collection = await dbService.getCollection('post')
         await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $pull: { 'comments.$.likedBy':  { _id:new ObjectId( likeById )} } })

@@ -1,5 +1,7 @@
 import { userService } from './user.service.js'
 import { logger } from '../../services/logger.service.js'
+import mongodb from 'mongodb'
+const { ObjectId } = mongodb
 
 export async function getUsers(req, res) {
     try {
@@ -16,7 +18,7 @@ export async function getUsers(req, res) {
 }
 
 export async function getUser(req, res) {
-    console.log('getUser:',req.params.id)
+    console.log('getUser:', req.params.id)
     try {
         const user = await userService.getById(req.params.id)
         res.send(user)
@@ -38,6 +40,7 @@ export async function updateUser(req, res) {
         res.status(500).send({ err: 'Failed to update user' })
     }
 }
+
 export async function updateUserImg(req, res) {
     try {
         const user = req.body
@@ -50,7 +53,6 @@ export async function updateUserImg(req, res) {
     }
 }
 
-
 export async function deleteUser(req, res) {
     try {
         await userService.remove(req.params.id)
@@ -58,5 +60,23 @@ export async function deleteUser(req, res) {
     } catch (err) {
         logger.error('Failed to delete user', err)
         res.status(500).send({ err: 'Failed to delete user' })
+    }
+}
+
+export async function addFollowing(req, res) {
+    const { loggedinUser } = req
+    try {
+        loggedinUser._id = new ObjectId(loggedinUser._id)
+        console.log('loggedinUser:', loggedinUser)
+        // const userId = req.params.id
+        const miniUser = req.body
+        miniUser._id = new ObjectId(miniUser._id)
+        console.log('miniUser:', miniUser)
+
+        const addedUser = await userService.addFollowing(loggedinUser, miniUser)
+        res.json(addedUser)
+    } catch (err) {
+        logger.error('Failed to add Like Post', err)
+        res.status(500).send({ err: 'Failed to add Like Post' })
     }
 }
