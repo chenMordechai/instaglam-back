@@ -14,7 +14,8 @@ export const userService = {
     remove,
     removePost,
     add,
-    addFollowing
+    addFollowing,
+    removeFollowing,
 }
 
 async function query(filterBy = {}) {
@@ -191,6 +192,18 @@ async function addFollowing(loggedinUser, miniUser) {
         await collection.updateOne({ _id: loggedinUser._id }, { $push: { following: miniUser } })
         await collection.updateOne({ _id: miniUser._id }, { $push: { followers: loggedinUser } })
         return miniUser
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
+}
+async function removeFollowing(loggedinUserId, userId) {
+    console.log('loggedinUserId, userId:', loggedinUserId, userId)
+    try {
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: loggedinUserId }, { $pull: { following: { _id: userId } } })
+        await collection.updateOne({ _id: userId }, { $pull: { followers: { _id: loggedinUserId } } })
+        return userId
     } catch (err) {
         logger.error(`cannot add like post ${postId}`, err)
         throw err

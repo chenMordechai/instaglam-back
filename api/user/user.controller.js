@@ -76,7 +76,23 @@ export async function addFollowing(req, res) {
         const addedUser = await userService.addFollowing(loggedinUser, miniUser)
         res.json(addedUser)
     } catch (err) {
-        logger.error('Failed to add Like Post', err)
-        res.status(500).send({ err: 'Failed to add Like Post' })
+        logger.error('Failed to add Following user', err)
+        res.status(500).send({ err: 'Failed to add Following user' })
+    }
+}
+export async function removeFollowing(req, res) {
+    const { loggedinUser } = req
+    try {
+        loggedinUser._id = new ObjectId(loggedinUser._id)
+        console.log('loggedinUser:', loggedinUser)
+        let userId = req.params.id
+        userId = new ObjectId(userId)
+        console.log('userId:', userId)
+
+        const addedUserId = await userService.removeFollowing(loggedinUser._id, userId)
+        res.json(addedUserId)
+    } catch (err) {
+        logger.error('Failed to add remove Following user', err)
+        res.status(500).send({ err: 'Failed to add remove Following user' })
     }
 }
