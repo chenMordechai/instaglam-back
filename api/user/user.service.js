@@ -2,6 +2,7 @@ import { dbService } from '../../services/db.service.js'
 import { logger } from '../../services/logger.service.js'
 
 import mongodb from 'mongodb'
+import { postService } from '../post/post.service.js'
 const { ObjectId } = mongodb
 
 export const userService = {
@@ -16,6 +17,8 @@ export const userService = {
     add,
     addFollowing,
     removeFollowing,
+    addNotificationPost,
+    addNotificationUser
 }
 
 async function query(filterBy = {}) {
@@ -197,6 +200,7 @@ async function addFollowing(loggedinUser, miniUser) {
         throw err
     }
 }
+
 async function removeFollowing(loggedinUserId, userId) {
     console.log('loggedinUserId, userId:', loggedinUserId, userId)
     try {
@@ -208,4 +212,36 @@ async function removeFollowing(loggedinUserId, userId) {
         logger.error(`cannot add like post ${postId}`, err)
         throw err
     }
+}
+
+async function addNotificationPost(notification, postId) {
+    try {
+        const post = await postService.getById(postId)
+        const userId = post.by._id
+
+        notification.postImgUrl = post.imgUrl
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
+        return notification
+    } catch (err) {
+        logger.error(`cannot add notification post ${postId}`, err)
+        throw err
+    }
+
+}
+async function addNotificationUser(notification, userId, postId) {
+    try {
+        if (postId) {
+            const post = await postService.getById(postId)
+            notification.postImgUrl = post.imgUrl
+        }
+
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
+        return notification
+    } catch (err) {
+        logger.error(`cannot add like post ${postId}`, err)
+        throw err
+    }
+
 }

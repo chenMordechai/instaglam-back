@@ -92,6 +92,15 @@ export async function addLikePost(req, res) {
         const likedBy = { ...loggedinUser }
         likedBy._id = new ObjectId(likedBy._id)
         const likedByPost = await postService.addLikePost(postId, likedBy)
+
+        const notification = {
+            miniUser: likedBy,
+            action: 'liked your post:',
+            postImgUrl: '',
+            timeStamp: Date.now(),
+        }
+        await userService.addNotificationPost(notification, postId)
+
         res.json(likedByPost)
     } catch (err) {
         logger.error('Failed to add Like Post', err)
@@ -116,20 +125,31 @@ export async function addComment(req, res) {
     const { loggedinUser } = req
     try {
         const postId = req.params.id
+        const commentBy = { ...loggedinUser }
+        commentBy._id = new ObjectId(commentBy._id)
         const comment = {
             _id: utilService.makeId(),
             txt: req.body.txt,
-            by: loggedinUser,
+            by: commentBy,
             createdAt: Date.now(),
             likedBy: []
         }
 
-        comment.by._id = new ObjectId(comment.by._id)
         const addedComment = await postService.addComment(postId, comment)
+
+        const notification = {
+            miniUser: commentBy,
+            action: 'commented:',
+            postImgUrl: '',
+            comment: comment.txt,
+            timeStamp: Date.now(),
+        }
+        await userService.addNotificationPost(notification, postId)
+
         res.json(addedComment)
     } catch (err) {
-        logger.error('Failed to add Like Post', err)
-        res.status(500).send({ err: 'Failed to add Like Post' })
+        logger.error('Failed to add Comment Post', err)
+        res.status(500).send({ err: 'Failed to add Comment Post' })
     }
 }
 
@@ -155,6 +175,17 @@ export async function addLikeComment(req, res) {
         likedBy._id = new ObjectId(likedBy._id)
 
         const likedByPost = await postService.addLikeComment(postId, commentId, likedBy)
+        // console.log('req.body:', req.body)
+        const notification = {
+            miniUser: likedBy,
+            action: 'liked your comment:',
+            postImgUrl: '',
+            comment: req.body.txt,
+            timeStamp: Date.now(),
+        }
+        const userId = req.body.by._id
+        await userService.addNotificationUser(notification, userId, postId)
+
         res.json(likedByPost)
     } catch (err) {
         logger.error('Failed to add Like Post', err)

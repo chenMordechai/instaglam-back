@@ -67,13 +67,20 @@ export async function addFollowing(req, res) {
     const { loggedinUser } = req
     try {
         loggedinUser._id = new ObjectId(loggedinUser._id)
-        console.log('loggedinUser:', loggedinUser)
-        // const userId = req.params.id
         const miniUser = req.body
         miniUser._id = new ObjectId(miniUser._id)
-        console.log('miniUser:', miniUser)
 
         const addedUser = await userService.addFollowing(loggedinUser, miniUser)
+
+        const notification = {
+            miniUser: loggedinUser,
+            action: 'started following you',
+            timeStamp: Date.now(),
+            button: 'txt'
+        }
+        const userId = req.params.id
+        await userService.addNotificationUser(notification, userId)
+
         res.json(addedUser)
     } catch (err) {
         logger.error('Failed to add Following user', err)
@@ -84,10 +91,8 @@ export async function removeFollowing(req, res) {
     const { loggedinUser } = req
     try {
         loggedinUser._id = new ObjectId(loggedinUser._id)
-        console.log('loggedinUser:', loggedinUser)
         let userId = req.params.id
         userId = new ObjectId(userId)
-        console.log('userId:', userId)
 
         const addedUserId = await userService.removeFollowing(loggedinUser._id, userId)
         res.json(addedUserId)

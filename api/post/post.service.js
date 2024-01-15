@@ -3,7 +3,7 @@ const { ObjectId } = mongodb
 
 import { dbService } from '../../services/db.service.js'
 import { logger } from '../../services/logger.service.js'
-import { utilService } from '../../services/util.service.js'
+
 
 export const postService = {
     query,
@@ -91,11 +91,9 @@ function _buildCriteria(filterBy) {
 }
 
 async function getById(postId) {
-    console.log('getById', postId)
     try {
         const collection = await dbService.getCollection('post')
         const post = await collection.findOne({ _id: new ObjectId(postId) })
-        console.log('post:', post)
         return post
         // var posts = await collection.aggregate([
         //     {
@@ -231,11 +229,11 @@ async function removeComment(postId, commentId) {
     }
 }
 
-async function addLikeComment(postId,commentId, likedBy) {
+async function addLikeComment(postId, commentId, likedBy) {
     try {
         const collection = await dbService.getCollection('post')
-        await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $push: { 'comments.$.likedBy': likedBy } })
-      
+        await collection.updateOne({ _id: new ObjectId(postId), 'comments._id': commentId }, { $push: { 'comments.$.likedBy': likedBy } })
+
         return likedBy
     } catch (err) {
         logger.error(`cannot add like post ${postId}`, err)
@@ -243,10 +241,10 @@ async function addLikeComment(postId,commentId, likedBy) {
     }
 }
 
-async function removeLikeComment(postId,commentId, likeById) {
+async function removeLikeComment(postId, commentId, likeById) {
     try {
         const collection = await dbService.getCollection('post')
-        await collection.updateOne({ _id: new ObjectId(postId) , 'comments._id': commentId } ,{ $pull: { 'comments.$.likedBy':  { _id:new ObjectId( likeById )} } })
+        await collection.updateOne({ _id: new ObjectId(postId), 'comments._id': commentId }, { $pull: { 'comments.$.likedBy': { _id: new ObjectId(likeById) } } })
         return postId
     } catch (err) {
         logger.error(`cannot remove like post ${postId}`, err)
