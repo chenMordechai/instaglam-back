@@ -159,7 +159,8 @@ async function add(user) {
             tagedPostsMini: [],
             highlights: [],
             stories: [],
-            description: '',
+            bio: '',
+            notifications: []
         }
         const collection = await dbService.getCollection('user')
         await collection.insertOne(userToAdd)

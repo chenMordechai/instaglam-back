@@ -95,7 +95,7 @@ export async function addLikePost(req, res) {
 
         const notification = {
             miniUser: likedBy,
-            action: 'liked your post:',
+            action: 'liked your post.',
             postImgUrl: '',
             timeStamp: Date.now(),
         }

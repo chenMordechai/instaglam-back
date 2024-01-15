@@ -74,7 +74,7 @@ export async function addFollowing(req, res) {
 
         const notification = {
             miniUser: loggedinUser,
-            action: 'started following you',
+            action: 'started following you.',
             timeStamp: Date.now(),
             button: 'txt'
         }

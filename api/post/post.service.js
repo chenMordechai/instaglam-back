@@ -141,8 +141,6 @@ async function getById(postId) {
 }
 
 async function add(post) {
-    console.log('add')
-    console.log('post:', post)
     try {
         const postToAdd = { ...post }
         postToAdd.by._id = new ObjectId(postToAdd.by._id)
