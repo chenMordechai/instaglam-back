@@ -1,5 +1,4 @@
 import { postService } from './post.service.js'
-import { socketService } from '../../services/socket.service.js'
 
 import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
