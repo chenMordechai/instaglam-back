@@ -3,6 +3,8 @@ import { logger } from '../../services/logger.service.js'
 
 import mongodb from 'mongodb'
 import { postService } from '../post/post.service.js'
+import { socketService } from '../../services/socket.service.js'
+
 const { ObjectId } = mongodb
 
 export const userService = {
@@ -18,7 +20,8 @@ export const userService = {
     addFollowing,
     removeFollowing,
     addNotificationPost,
-    addNotificationUser
+    addNotificationUser,
+    updateUserNotification
 }
 
 async function query(filterBy = {}) {
@@ -82,7 +85,7 @@ async function update(user) {
             _id: new ObjectId(user._id),
             username: user.username,
             fullname: user.fullname,
-            // imgUrl: user.imgUrl
+            imgUrl: user.imgUrl
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -129,6 +132,8 @@ async function updateImg(user) {
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: { imgUrl: userToSave.imgUrl } })
+
+
         return userToSave
     } catch (err) {
         logger.error(`cannot update user ${user._id}`, err)
@@ -216,6 +221,7 @@ async function removeFollowing(loggedinUserId, userId) {
 }
 
 async function addNotificationPost(notification, postId) {
+    console.log('addNotificationPost')
     try {
         const post = await postService.getById(postId)
         const userId = post.by._id
@@ -223,6 +229,9 @@ async function addNotificationPost(notification, postId) {
         notification.postImgUrl = post.imgUrl
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
+       
+        socketService.emitToUser({ type: 'notification-added', userId})
+       
         return notification
     } catch (err) {
         logger.error(`cannot add notification post ${postId}`, err)
@@ -231,6 +240,7 @@ async function addNotificationPost(notification, postId) {
 
 }
 async function addNotificationUser(notification, userId, postId) {
+    console.log('addNotificationUser')
     try {
         if (postId) {
             const post = await postService.getById(postId)
@@ -239,10 +249,26 @@ async function addNotificationUser(notification, userId, postId) {
 
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
+      
+        socketService.emitToUser({ type: 'notification-added', userId})
+
+      
         return notification
     } catch (err) {
         logger.error(`cannot add like post ${postId}`, err)
         throw err
     }
 
+}
+
+async function updateUserNotification(userId) { // seen => true
+    try {
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { 'notifications.$[elem].seen': true } }, { "arrayFilters": [{ "elem.seen": false }], "multi": true })
+
+        return userId
+    } catch (err) {
+        logger.error(`cannot update user ${userId}`, err)
+        throw err
+    }
 }

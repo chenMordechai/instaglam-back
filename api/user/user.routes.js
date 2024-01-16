@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { requireAuth, requireAdmin } from '../../middlewares/requireAuth.middleware.js'
-import { getUser, getUsers, deleteUser, updateUser, updateUserImg, addFollowing, removeFollowing } from './user.controller.js'
+import { getUser, getUsers, deleteUser, updateUserNotification, updateUser, updateUserImg, addFollowing, removeFollowing } from './user.controller.js'
 
 export const userRoutes = express.Router()
 
@@ -20,6 +20,7 @@ userRoutes.delete('/:id', deleteUser)
 userRoutes.post('/:id/following', requireAuth, addFollowing)
 userRoutes.delete('/:id/following', requireAuth, removeFollowing)
 
+userRoutes.put('/:id/notification', updateUserNotification)
 
 // userRoutes.put('/:id',  requireAuth, updateUser)
 // userRoutes.delete('/:id',  requireAuth, requireAdmin, deleteUser)

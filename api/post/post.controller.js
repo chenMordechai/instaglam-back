@@ -1,4 +1,6 @@
 import { postService } from './post.service.js'
+import { socketService } from '../../services/socket.service.js'
+
 import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
 import { log } from '../../middlewares/logger.middleware.js'
@@ -37,7 +39,6 @@ export async function addPost(req, res) {
     const { loggedinUser } = req
     try {
         const post = req.body
-        // // post.byUserId = '656c29766b05f4baadc8ca9d'
         post.by = loggedinUser
         post.createdAt = Date.now()
         const addedPost = await postService.add(post)
@@ -51,6 +52,8 @@ export async function addPost(req, res) {
         }
         const updatedUser = await userService.updatePost(postMini, post.by._id)
 
+        socketService.broadcast({ type: 'post-added', data: addedPost, userId: loggedinUser._id })
+
         res.json(addedPost)
     } catch (err) {
         logger.error('Failed to add post', err)
@@ -62,9 +65,10 @@ export async function updatePost(req, res) {
     try {
 
         const post = req.body
-        const updatedStory = await postService.update(post)
-        // socketService.broadcast({ type: 'story-updated', data: updatedStory, userId: loggedinUser._id })
-        res.json(updatedStory)
+        const updatedPost = await postService.update(post)
+        socketService.broadcast({ type: 'post-updated', data: updatedPost, userId: post.by._id })
+
+        res.json(updatedPost)
     } catch (err) {
         logger.error('Failed to update post', err)
         res.status(500).send({ err: 'Failed to update post' })
@@ -76,8 +80,10 @@ export async function removePost(req, res) {
     try {
         const userId = loggedinUser._id
         const postId = req.params.id
-        await postService.remove(postId)
+        const removedId=   await postService.remove(postId)
         const updatedUser = await userService.removePost(postId, userId)
+        socketService.broadcast({ type: 'post-removed', data: postId, userId: loggedinUser._id })
+
         res.send({ msg: 'Deleted successfully' })
     } catch (err) {
         logger.error('Failed to remove post', err)
@@ -93,11 +99,14 @@ export async function addLikePost(req, res) {
         likedBy._id = new ObjectId(likedBy._id)
         const likedByPost = await postService.addLikePost(postId, likedBy)
 
+        socketService.broadcast({ type: 'like-post-added', data: {postId,likedBy}, userId: loggedinUser._id })
+
         const notification = {
             miniUser: likedBy,
             action: 'liked your post.',
             postImgUrl: '',
             timeStamp: Date.now(),
+            seen: false
         }
         await userService.addNotificationPost(notification, postId)
 
@@ -114,6 +123,9 @@ export async function removeLikePost(req, res) {
         const { likeById } = req.params
 
         const removedId = await postService.removeLikePost(postId, likeById)
+       
+        socketService.broadcast({ type: 'like-post-removed', data: {postId,likeById}, userId: likeById })
+       
         res.send(removedId)
     } catch (err) {
         logger.error('Failed to remove like post', err)
@@ -137,12 +149,15 @@ export async function addComment(req, res) {
 
         const addedComment = await postService.addComment(postId, comment)
 
+        socketService.broadcast({ type: 'comment-added', data: {postId,comment}, userId: loggedinUser._id })
+
         const notification = {
             miniUser: commentBy,
             action: 'commented:',
             postImgUrl: '',
             comment: comment.txt,
             timeStamp: Date.now(),
+            seen: false
         }
         await userService.addNotificationPost(notification, postId)
 
@@ -154,11 +169,15 @@ export async function addComment(req, res) {
 }
 
 export async function removeComment(req, res) {
+    const { loggedinUser } = req
     try {
         const postId = req.params.id
         const { commentId } = req.params
 
         const removedId = await postService.removeComment(postId, commentId)
+       
+        socketService.broadcast({ type: 'comment-removed', data: {postId,commentId}, userId: loggedinUser._id })
+       
         res.send(removedId)
     } catch (err) {
         logger.error('Failed to remove like post', err)
@@ -182,6 +201,7 @@ export async function addLikeComment(req, res) {
             postImgUrl: '',
             comment: req.body.txt,
             timeStamp: Date.now(),
+            seen: false
         }
         const userId = req.body.by._id
         await userService.addNotificationUser(notification, userId, postId)

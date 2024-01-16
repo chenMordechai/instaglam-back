@@ -76,7 +76,8 @@ export async function addFollowing(req, res) {
             miniUser: loggedinUser,
             action: 'started following you.',
             timeStamp: Date.now(),
-            button: 'txt'
+            button: 'txt',
+            seen: false
         }
         const userId = req.params.id
         await userService.addNotificationUser(notification, userId)
@@ -99,5 +100,17 @@ export async function removeFollowing(req, res) {
     } catch (err) {
         logger.error('Failed to add remove Following user', err)
         res.status(500).send({ err: 'Failed to add remove Following user' })
+    }
+}
+
+export async function updateUserNotification(req, res) {
+    try {
+        let userId = req.params.id
+        console.log('userId:', userId)
+        const savedUser = await userService.updateUserNotification(userId)
+        res.send(savedUser)
+    } catch (err) {
+        logger.error('Failed to update user', err)
+        res.status(500).send({ err: 'Failed to update user' })
     }
 }
