@@ -4,6 +4,7 @@ import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
 import { log } from '../../middlewares/logger.middleware.js'
 import { utilService } from '../../services/util.service.js'
+import { socketService } from '../../services/socket.service.js'
 import mongodb from 'mongodb'
 const { ObjectId } = mongodb
 
