@@ -10,13 +10,14 @@ const { ObjectId } = mongodb
 
 export async function getPosts(req, res) {
     try {
-        // const { txt, aboutToyId, byUserId } = req.query
-        // const filterBy = { txt, aboutToyId, byUserId }
+        const { type } = req.query
+        const filterBy = { type }
         // const sortBy = {}
+        console.log('filterBy:', filterBy)
 
         // logger.debug('Getting Posts', filterBy, sortBy)
         // const posts = await postService.query(filterBy, sortBy)
-        const posts = await postService.query()
+        const posts = await postService.query(filterBy)
         res.json(posts)
     } catch (err) {
         logger.error('Failed to get posts', err)
@@ -43,14 +44,19 @@ export async function addPost(req, res) {
         post.createdAt = Date.now()
         const addedPost = await postService.add(post)
 
-        const postMini = {
-            commentCount: post.commentCount,
-            imgUrl: post.imgUrl,
-            likeCount: post.likeCount,
-            _id: new ObjectId(addedPost._id),
-            imgFilter: post.imgFilter
+        if (post.type.includes('image')) {
+
+            const postMini = {
+                commentCount: post.commentCount,
+                imgUrl: post.imgUrl,
+                likeCount: post.likeCount,
+                _id: new ObjectId(addedPost._id),
+                type: post.type,
+                url: post.url,
+
+            }
+            const updatedUser = await userService.updatePost(postMini, post.by._id)
         }
-        const updatedUser = await userService.updatePost(postMini, post.by._id)
 
         socketService.broadcast({ type: 'post-added', data: addedPost, userId: loggedinUser._id })
 
@@ -80,7 +86,7 @@ export async function removePost(req, res) {
     try {
         const userId = loggedinUser._id
         const postId = req.params.id
-        const removedId=   await postService.remove(postId)
+        const removedId = await postService.remove(postId)
         const updatedUser = await userService.removePost(postId, userId)
         socketService.broadcast({ type: 'post-removed', data: postId, userId: loggedinUser._id })
 
@@ -99,7 +105,7 @@ export async function addLikePost(req, res) {
         likedBy._id = new ObjectId(likedBy._id)
         const likedByPost = await postService.addLikePost(postId, likedBy)
 
-        socketService.broadcast({ type: 'like-post-added', data: {postId,likedBy}, userId: loggedinUser._id })
+        socketService.broadcast({ type: 'like-post-added', data: { postId, likedBy }, userId: loggedinUser._id })
 
         const notification = {
             miniUser: likedBy,
@@ -123,9 +129,9 @@ export async function removeLikePost(req, res) {
         const { likeById } = req.params
 
         const removedId = await postService.removeLikePost(postId, likeById)
-       
-        socketService.broadcast({ type: 'like-post-removed', data: {postId,likeById}, userId: likeById })
-       
+
+        socketService.broadcast({ type: 'like-post-removed', data: { postId, likeById }, userId: likeById })
+
         res.send(removedId)
     } catch (err) {
         logger.error('Failed to remove like post', err)
@@ -149,7 +155,7 @@ export async function addComment(req, res) {
 
         const addedComment = await postService.addComment(postId, comment)
 
-        socketService.broadcast({ type: 'comment-added', data: {postId,comment}, userId: loggedinUser._id })
+        socketService.broadcast({ type: 'comment-added', data: { postId, comment }, userId: loggedinUser._id })
 
         const notification = {
             miniUser: commentBy,
@@ -175,9 +181,9 @@ export async function removeComment(req, res) {
         const { commentId } = req.params
 
         const removedId = await postService.removeComment(postId, commentId)
-       
-        socketService.broadcast({ type: 'comment-removed', data: {postId,commentId}, userId: loggedinUser._id })
-       
+
+        socketService.broadcast({ type: 'comment-removed', data: { postId, commentId }, userId: loggedinUser._id })
+
         res.send(removedId)
     } catch (err) {
         logger.error('Failed to remove like post', err)

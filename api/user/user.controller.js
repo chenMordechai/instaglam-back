@@ -8,7 +8,6 @@ export async function getUsers(req, res) {
         const { txt } = req.query
 
         const filterBy = { txt }
-        console.log('filterBy:', filterBy)
         const users = await userService.query(filterBy)
         res.send(users)
     } catch (err) {
@@ -104,10 +103,8 @@ export async function removeFollowing(req, res) {
 }
 
 export async function updateUserNotification(req, res) {
-    console.log('updateUserNotification')
     try {
         let userId = req.params.id
-        console.log('userId:', userId)
         const savedUser = await userService.updateUserNotification(userId)
         res.send(savedUser)
     } catch (err) {

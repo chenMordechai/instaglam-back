@@ -21,7 +21,7 @@ export const postService = {
 
 async function query(filterBy = {}, sortBy = {}) {
     try {
-        // const criteria = _buildCriteria(filterBy)
+        const criteria = _buildCriteria(filterBy)
         // const sort = {}
         // if (sortBy.type) {
         //     sort = {
@@ -29,8 +29,8 @@ async function query(filterBy = {}, sortBy = {}) {
         //     }
         // }
         const collection = await dbService.getCollection('post')
-        var posts = await collection.find().toArray()
-        // var posts = await collection.find(criteria).sort(sort).toArray()
+        // var posts = await collection.find().toArray()
+        var posts = await collection.find(criteria).toArray()
         // console.log('posts:', posts)
         // var posts = await collection.aggregate([
         //     {
@@ -78,15 +78,15 @@ async function query(filterBy = {}, sortBy = {}) {
 
 function _buildCriteria(filterBy) {
     const criteria = {}
-    if (filterBy.txt) {
-        criteria.txt = { $regex: filterBy.txt, $options: 'i' }
+    if (filterBy.type) {
+        criteria.type = { $regex: filterBy.type, $options: 'i' }
     }
-    if (filterBy.aboutToyId) {
-        criteria.aboutToyId = new ObjectId(filterBy.aboutToyId)
-    }
-    if (filterBy.byUserId) {
-        criteria.byUserId = new ObjectId(filterBy.byUserId)
-    }
+    // if (filterBy.aboutToyId) {
+    //     criteria.aboutToyId = new ObjectId(filterBy.aboutToyId)
+    // }
+    // if (filterBy.byUserId) {
+    //     criteria.byUserId = new ObjectId(filterBy.byUserId)
+    // }
     return criteria
 }
 
