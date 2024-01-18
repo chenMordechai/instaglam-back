@@ -48,32 +48,33 @@ export function setupSocketAPI(http) {
             // emits only to sockets in the same room
             storyService.addMsgToChat(msg, socket.myTopic)
 
-            broadcast({type:'chat-add-msg', data:msg,room: socket.myTopic })
+            broadcast({ type: 'chat-add-msg', data: msg, room: socket.myTopic })
             // gIo.to(socket.myTopic).emit('chat-add-msg', msg)
         })
-      
-        socket.on('chat-user-typing',user =>{
+
+        socket.on('chat-user-typing', user => {
             logger.info(`User is typing from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`)
             // emits only to xockets in the same room except the user
-            broadcast({ type: 'chat-add-typing', data: user.fullname,room:socket.myTopic, userId: user._id })
+            broadcast({ type: 'chat-add-typing', data: user.fullname, room: socket.myTopic, userId: user._id })
             // socket.broadcast.to(socket.myTopic).emit('chat-add-typing', user)
         })
-        socket.on('chat-stop-typing',user =>{
+        socket.on('chat-stop-typing', user => {
             logger.info(`User has stopped typing from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`)
 
             // emits only to xockets in the same room except the user
-            broadcast({ type: 'chat-remove-typing', data: user.fullname,room:socket.myTopic, userId: user._id })
+            broadcast({ type: 'chat-remove-typing', data: user.fullname, room: socket.myTopic, userId: user._id })
             // socket.broadcast.to(socket.myTopic).emit('chat-remove-typing', user)
 
         })
 
         // work
         socket.on('user-watch', userId => {
+            console.log('userId!!!!!!!!!!!!!!!!!:', userId)
             logger.info(`user-watch from socket [id: ${socket.id}], on user ${userId}`)
             socket.join('watching:' + userId)
 
         })
-        
+
 
         // Auth - work
         socket.on('set-user-socket', userId => {
@@ -109,7 +110,7 @@ async function emitToUser({ type, data, userId }) {
 
 // If possible, send to all sockets BUT not the current socket 
 // Optionally, broadcast to a room / to all
-async function broadcast({ type, data, room = null, userId ='' }) {
+async function broadcast({ type, data, room = null, userId = '' }) {
     userId = userId.toString()
     logger.info(`Broadcasting event: ${type}`)
     const excludedSocket = await _getUserSocket(userId)

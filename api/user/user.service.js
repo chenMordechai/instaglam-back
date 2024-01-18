@@ -25,18 +25,19 @@ export const userService = {
 }
 
 async function query(filterBy = {}) {
-    // const criteria = _buildCriteria(filterBy)
     try {
+        const criteria = _buildCriteria(filterBy)
+        console.log('criteria:', criteria)
         const collection = await dbService.getCollection('user')
-        var users = await collection.find().toArray()
-        // var users = await collection.find(criteria).sort({nickname: -1}).toArray()
-        // users = users.map(user => {
-        //     delete user.password
-        //     user.createdAt = ObjectId(user._id).getTimestamp()
-        //     // Returning fake fresh data
-        //     // user.createdAt = Date.now() - (1000 * 60 * 60 * 24 * 3) // 3 days ago
-        //     return user
-        // })
+        // var users = await collection.find().toArray()
+        var users = await collection.find(criteria).toArray()
+        console.log('users:', users)
+        users = users.map(user => {
+            delete user.password
+            // Returning fake fresh data
+            // user.createdAt = Date.now() - (1000 * 60 * 60 * 24 * 3) // 3 days ago
+            return user
+        })
         return users
     } catch (err) {
         logger.error('cannot find users', err)
@@ -44,6 +45,25 @@ async function query(filterBy = {}) {
     }
 }
 
+function _buildCriteria(filterBy) {
+    console.log('filterBy:', filterBy)
+    const criteria = {}
+    if (filterBy.txt) {
+        const txtCriteria = { $regex: filterBy.txt, $options: 'i' }
+        criteria.$or = [
+            {
+                username: txtCriteria
+            },
+            {
+                fullname: txtCriteria
+            }
+        ]
+    }
+    // if (filterBy.minBalance) {
+    //     criteria.balance = { $gte: filterBy.minBalance }
+    // }
+    return criteria
+}
 async function getById(userId) {
     try {
         const collection = await dbService.getCollection('user')
@@ -162,7 +182,42 @@ async function add(user) {
             savedPostsMini: [],
             postsMini: [],
             tagedPostsMini: [],
-            highlights: [],
+            highlights: [{
+                _id: 'h101',
+                name: 'travel',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417530/4_kvlqwr_square_pj0sey.png',
+                imgs: []
+            },
+            {
+                _id: 'h102',
+                name: 'friend',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417568/3_ktgblo_square_o6fhfx.png',
+                imgs: []
+            },
+            {
+                _id: 'h103',
+                name: 'family',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417599/2_crpq3m_square_hcqyt1.png',
+                imgs: []
+            },
+            {
+                _id: 'h104',
+                name: 'working',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417426/6_ssoiua_square_phgkeq.png',
+                imgs: []
+            },
+            {
+                _id: 'h105',
+                name: 'workout',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417488/5_w0naxv_square_ho4hwf.png',
+                imgs: []
+            },
+            {
+                _id: 'h106',
+                name: 'my story',
+                imgUrl: 'https://res.cloudinary.com/dnluclrao/image/upload/v1705417700/1_v6nok7_square_rlmco8.png',
+                imgs: []
+            }],
             stories: [],
             bio: '',
             notifications: []
@@ -176,24 +231,7 @@ async function add(user) {
     }
 }
 
-function _buildCriteria(filterBy) {
-    const criteria = {}
-    if (filterBy.txt) {
-        const txtCriteria = { $regex: filterBy.txt, $options: 'i' }
-        criteria.$or = [
-            {
-                username: txtCriteria
-            },
-            {
-                fullname: txtCriteria
-            }
-        ]
-    }
-    if (filterBy.minBalance) {
-        criteria.balance = { $gte: filterBy.minBalance }
-    }
-    return criteria
-}
+
 
 async function addFollowing(loggedinUser, miniUser) {
     try {
@@ -229,9 +267,9 @@ async function addNotificationPost(notification, postId) {
         notification.postImgUrl = post.imgUrl
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
-       
-        socketService.emitToUser({ type: 'notification-added', userId})
-       
+
+        socketService.emitToUser({ type: 'notification-added', userId })
+
         return notification
     } catch (err) {
         logger.error(`cannot add notification post ${postId}`, err)
@@ -249,10 +287,10 @@ async function addNotificationUser(notification, userId, postId) {
 
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
-      
-        socketService.emitToUser({ type: 'notification-added', userId})
 
-      
+        socketService.emitToUser({ type: 'notification-added', userId })
+
+
         return notification
     } catch (err) {
         logger.error(`cannot add like post ${postId}`, err)
@@ -264,7 +302,7 @@ async function addNotificationUser(notification, userId, postId) {
 async function updateUserNotification(userId) { // seen => true
     try {
         const collection = await dbService.getCollection('user')
-        await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { 'notifications.$[elem].seen': true } }, { "arrayFilters": [{ "elem.seen": false }], "multi": true })
+        await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { 'notifications.$[elem].seen': true } }, { 'arrayFilters': [{ 'elem.seen': false }], 'multi': true })
 
         return userId
     } catch (err) {

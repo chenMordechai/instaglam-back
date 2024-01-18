@@ -5,10 +5,10 @@ const { ObjectId } = mongodb
 
 export async function getUsers(req, res) {
     try {
-        const filterBy = {
-            // txt: req.query?.txt || '',
-            // minBalance: +req.query?.minBalance || 0
-        }
+        const { txt } = req.query
+
+        const filterBy = { txt }
+        console.log('filterBy:', filterBy)
         const users = await userService.query(filterBy)
         res.send(users)
     } catch (err) {
@@ -104,6 +104,7 @@ export async function removeFollowing(req, res) {
 }
 
 export async function updateUserNotification(req, res) {
+    console.log('updateUserNotification')
     try {
         let userId = req.params.id
         console.log('userId:', userId)
