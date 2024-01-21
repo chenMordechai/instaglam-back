@@ -69,7 +69,6 @@ export function setupSocketAPI(http) {
 
         // work
         socket.on('user-watch', userId => {
-            console.log('userId!!!!!!!!!!!!!!!!!:', userId)
             logger.info(`user-watch from socket [id: ${socket.id}], on user ${userId}`)
             socket.join('watching:' + userId)
 
@@ -80,7 +79,6 @@ export function setupSocketAPI(http) {
         socket.on('set-user-socket', userId => {
             logger.info(`Setting socket.userId = ${userId} for socket [id: ${socket.id}]`)
             socket.userId = userId
-            console.log('socket.userId:', socket.userId)
         })
         socket.on('unset-user-socket', () => {
             logger.info(`Removing socket.userId for socket [id: ${socket.id}]`)
@@ -132,7 +130,6 @@ async function broadcast({ type, data, room = null, userId = '' }) {
 
 async function _getUserSocket(userId) {
     const sockets = await _getAllSockets()
-    // console.log('sockets:', sockets)
     const socket = sockets.find(s => s.userId === userId)
     return socket
 }

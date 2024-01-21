@@ -2,11 +2,9 @@ import { authService } from './auth.service.js'
 import { logger } from '../../services/logger.service.js'
 
 export async function login(req, res) {
-    console.log('login:')
     const { username, password } = req.body
     try {
         const user = await authService.login(username, password)
-        console.log('user login:', user)
         const loginToken = authService.getLoginToken(user)
         logger.info('User login: ', user)
         res.cookie('loginToken', loginToken)
@@ -29,7 +27,6 @@ export async function signup(req, res) {
         const user = await authService.login(username, password)
         const loginToken = authService.getLoginToken(user)
 
-        console.log('user:', user)
         res.cookie('loginToken', loginToken)
         res.json(user)
     } catch (err) {

@@ -4,7 +4,6 @@ import { socketService } from '../../services/socket.service.js'
 
 // work
 export async function getStories(req, res) {
-    console.log('get stories')
     try {
         // const { name, price, inStock, labels, type, desc } = req.query
         // const filterBy = { name, price: +price, inStock , labels: (labels) ? labels : [] }
@@ -44,7 +43,7 @@ export async function addStory(req, res) {
         // story.owner = loggedinUser
         const addedStory = await storyService.add(story)
         // socketService.broadcast({ type: 'story-added', data: addedStory, userId: loggedinUser._id })
-        
+
         res.json(addedStory)
     } catch (err) {
         logger.error('Failed to add story', err)

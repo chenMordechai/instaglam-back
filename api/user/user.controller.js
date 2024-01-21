@@ -17,7 +17,6 @@ export async function getUsers(req, res) {
 }
 
 export async function getUser(req, res) {
-    console.log('getUser:', req.params.id)
     try {
         const user = await userService.getById(req.params.id)
         res.send(user)
@@ -28,10 +27,8 @@ export async function getUser(req, res) {
 }
 
 export async function updateUser(req, res) {
-    console.log('updateUser')
     try {
         const user = req.body
-        console.log('user:', user)
         const savedUser = await userService.update(user)
         res.send(savedUser)
     } catch (err) {
@@ -43,7 +40,6 @@ export async function updateUser(req, res) {
 export async function updateUserImg(req, res) {
     try {
         const user = req.body
-        console.log('user:', user)
         const savedUser = await userService.updateImg(user)
         res.send(savedUser)
     } catch (err) {

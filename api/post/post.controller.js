@@ -13,8 +13,6 @@ export async function getPosts(req, res) {
         const { type } = req.query
         const filterBy = { type }
         // const sortBy = {}
-        console.log('filterBy:', filterBy)
-
         // logger.debug('Getting Posts', filterBy, sortBy)
         // const posts = await postService.query(filterBy, sortBy)
         const posts = await postService.query(filterBy)

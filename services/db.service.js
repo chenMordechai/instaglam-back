@@ -10,7 +10,6 @@ export const dbService = {
 var dbConn = null
 
 async function getCollection(collectionName) {
-    console.log('getCollection')
     try {
         const db = await _connect()
         const collection = await db.collection(collectionName)
@@ -24,7 +23,6 @@ async function getCollection(collectionName) {
 async function _connect() {
     if (dbConn) return dbConn
     try {
-        // console.log('_connect')
         const client = await MongoClient.connect(config.dbURL)
         // const client = await MongoClient.connect(config.dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
         const db = client.db(config.dbName)

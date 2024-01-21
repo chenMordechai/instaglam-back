@@ -27,11 +27,9 @@ export const userService = {
 async function query(filterBy = {}) {
     try {
         const criteria = _buildCriteria(filterBy)
-        console.log('criteria:', criteria)
         const collection = await dbService.getCollection('user')
         // var users = await collection.find().toArray()
         var users = await collection.find(criteria).toArray()
-        console.log('users:', users)
         users = users.map(user => {
             delete user.password
             // Returning fake fresh data
@@ -46,7 +44,6 @@ async function query(filterBy = {}) {
 }
 
 function _buildCriteria(filterBy) {
-    console.log('filterBy:', filterBy)
     const criteria = {}
     if (filterBy.txt) {
         const txtCriteria = { $regex: filterBy.txt, $options: 'i' }
@@ -105,7 +102,8 @@ async function update(user) {
             _id: new ObjectId(user._id),
             username: user.username,
             fullname: user.fullname,
-            imgUrl: user.imgUrl
+            imgUrl: user.imgUrl,
+            bio: user.bio
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -118,7 +116,6 @@ async function update(user) {
 
 async function updatePost(postMini, userId) {
 
-    console.log('userId:', userId)
     try {
 
         const collection = await dbService.getCollection('user')
@@ -164,9 +161,7 @@ async function updateImg(user) {
 async function add(user) {
     try {
         // Validate that there are no such user:
-        console.log('user.username:', user.username)
         const existUser = await getByUsername(user.username)
-        console.log('existUser:', existUser)
         if (existUser) throw new Error('Username taken')
 
         // peek only updatable fields!
@@ -246,7 +241,6 @@ async function addFollowing(loggedinUser, miniUser) {
 }
 
 async function removeFollowing(loggedinUserId, userId) {
-    console.log('loggedinUserId, userId:', loggedinUserId, userId)
     try {
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: loggedinUserId }, { $pull: { following: { _id: userId } } })
@@ -259,7 +253,6 @@ async function removeFollowing(loggedinUserId, userId) {
 }
 
 async function addNotificationPost(notification, postId) {
-    console.log('addNotificationPost')
     try {
         const post = await postService.getById(postId)
         const userId = post.by._id
@@ -278,7 +271,6 @@ async function addNotificationPost(notification, postId) {
 
 }
 async function addNotificationUser(notification, userId, postId) {
-    console.log('addNotificationUser')
     try {
         if (postId) {
             const post = await postService.getById(postId)

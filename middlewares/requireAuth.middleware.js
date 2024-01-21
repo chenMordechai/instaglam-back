@@ -3,10 +3,9 @@ import { authService } from '../api/auth/auth.service.js'
 
 export async function requireAuth(req, res, next) {
     if (!req?.cookies?.loginToken) {
-        console.log('requireAuth:')
         return res.status(401).send('Not Authenticated')
     }
-    
+
     const loggedinUser = authService.validateToken(req.cookies.loginToken)
     if (!loggedinUser) return res.status(401).send('Not Authenticated')
 
@@ -15,14 +14,11 @@ export async function requireAuth(req, res, next) {
 }
 
 export async function requireAdmin(req, res, next) {
-    console.log("requireAdmin")
-    console.log('!req?.cookies?.loginToken:', req.cookies.loginToken)
     if (!req?.cookies?.loginToken) {
         return res.status(401).send('Not Authenticated')
     }
 
     const loggedinUser = authService.validateToken(req.cookies.loginToken)
-   console.log('loggedinUser:', loggedinUser)
     if (!loggedinUser.isAdmin) {
         logger.warn(loggedinUser.fullname + 'attempted to perform admin action')
         res.status(403).end('Not Authorized')
