@@ -10,7 +10,7 @@ export const userRoutes = express.Router()
 
 userRoutes.get('/', getUsers)
 userRoutes.get('/:id', getUser)
-userRoutes.put('/:id/img', updateUserImg)
+userRoutes.put('/:id/img',requireAuth, updateUserImg)
 // userRoutes.put('/:id/img',requireAuth,  updateUserImg)
 userRoutes.put('/:id', updateUser)
 

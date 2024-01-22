@@ -1,5 +1,6 @@
 import { userService } from './user.service.js'
 import { logger } from '../../services/logger.service.js'
+import { authService } from '../auth/auth.service.js'
 import mongodb from 'mongodb'
 const { ObjectId } = mongodb
 
@@ -38,9 +39,22 @@ export async function updateUser(req, res) {
 }
 
 export async function updateUserImg(req, res) {
+    console.log('updateUserImg')
     try {
+        // const { loggedinUser } = req
+        // console.log('loggedinUser:', loggedinUser)
         const user = req.body
+        console.log('user:', user)
         const savedUser = await userService.updateImg(user)
+
+        // update imgUrl of loggedinUser 
+        const loggedinUser = authService.validateToken(req.cookies.loginToken)
+        // console.log('loggedinUser:', loggedinUser)
+        const newUser = {...loggedinUser,imgUrl:user.imgUrl}
+        // console.log('newUser:', newUser)
+        const loginToken = authService.getLoginToken(newUser)
+        // res.cookie('loginToken', loginToken)
+
         res.send(savedUser)
     } catch (err) {
         logger.error('Failed to update user', err)
@@ -83,6 +97,7 @@ export async function addFollowing(req, res) {
         res.status(500).send({ err: 'Failed to add Following user' })
     }
 }
+
 export async function removeFollowing(req, res) {
     const { loggedinUser } = req
     try {

@@ -61,6 +61,7 @@ function _buildCriteria(filterBy) {
     // }
     return criteria
 }
+
 async function getById(userId) {
     try {
         const collection = await dbService.getCollection('user')
@@ -226,8 +227,6 @@ async function add(user) {
     }
 }
 
-
-
 async function addFollowing(loggedinUser, miniUser) {
     try {
         const collection = await dbService.getCollection('user')
@@ -270,6 +269,7 @@ async function addNotificationPost(notification, postId) {
     }
 
 }
+
 async function addNotificationUser(notification, userId, postId) {
     try {
         if (postId) {

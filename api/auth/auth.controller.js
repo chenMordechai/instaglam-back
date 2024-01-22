@@ -35,6 +35,10 @@ export async function signup(req, res) {
     }
 }
 
+// function updateLoginToken(user){
+    
+// }
+
 export async function logout(req, res) {
     try {
         res.clearCookie('loginToken')
