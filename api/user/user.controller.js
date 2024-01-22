@@ -64,7 +64,7 @@ export async function updateUserImg(req, res) {
         const newUser = {...loggedinUser,imgUrl:user.imgUrl}
         // console.log('newUser:', newUser)
         const loginToken = authService.getLoginToken(newUser)
-        // res.cookie('loginToken', loginToken)
+        res.cookie('loginToken', loginToken)
 
         res.send(savedUser)
     } catch (err) {
