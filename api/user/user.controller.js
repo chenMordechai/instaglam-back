@@ -28,9 +28,20 @@ export async function getUser(req, res) {
 }
 
 export async function updateUser(req, res) {
+    console.log('updateUser')
     try {
         const user = req.body
         const savedUser = await userService.update(user)
+
+          // update details of loggedinUser 
+          const loggedinUser = authService.validateToken(req.cookies.loginToken)
+          // console.log('loggedinUser:', loggedinUser)
+          const {username,fullname,imgUrl} = user
+          const newLoggedinUser = {...loggedinUser , username,fullname,imgUrl }
+          console.log('newLoggedinUser:', newLoggedinUser)
+          // console.log('newUser:', newUser)
+          const loginToken = authService.getLoginToken(newLoggedinUser)
+          res.cookie('loginToken', loginToken)
         res.send(savedUser)
     } catch (err) {
         logger.error('Failed to update user', err)
