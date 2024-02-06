@@ -260,7 +260,7 @@ async function addNotificationPost(notification, postId) {
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
 
-        socketService.emitToUser({ type: 'notification-added', userId })
+        socketService.emitToUser({ type: 'notification-added', data: notification, userId })
 
         return notification
     } catch (err) {
@@ -280,7 +280,7 @@ async function addNotificationUser(notification, userId, postId) {
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: new ObjectId(userId) }, { $push: { notifications: notification } })
 
-        socketService.emitToUser({ type: 'notification-added', userId })
+        socketService.emitToUser({ type: 'notification-added', data: notification, userId })
 
 
         return notification

@@ -93,7 +93,7 @@ function emitTo({ type, data, label }) {
 }
 
 async function emitToUser({ type, data, userId }) {
-    userId = userId.toString()
+    userId = userId?.toString()
     const socket = await _getUserSocket(userId)
 
     if (socket) {
@@ -132,6 +132,7 @@ async function _getUserSocket(userId) {
     const socket = sockets.find(s => s.userId === userId)
     return socket
 }
+
 async function _getAllSockets() {
     // return all Socket instances
     const sockets = await gIo.fetchSockets()
