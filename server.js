@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === 'production') {
     // Configuring CORS
     const corsOptions = {
         // Make sure origin contains the url your frontend is running on
-        origin: ['http://127.0.0.1:5173','http://127.0.0.1:5174','http://localhost:5174', 'http://localhost:5173', 'http://127.0.0.1:3000', 'http://localhost:3000'],
+        origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5174', 'http://localhost:5174', 'http://localhost:5173', 'http://127.0.0.1:3000', 'http://localhost:3000'],
         credentials: true
     }
     app.use(cors(corsOptions))
@@ -37,6 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { postRoutes } from './api/post/post.routes.js'
+import { msgRoutes } from './api/msg/msg.routes.js'
 import { setupSocketAPI } from './services/socket.service.js'
 
 // routes 
@@ -46,6 +47,7 @@ app.all('*', setupAsyncLocalStorage)
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
+app.use('/api/msg', msgRoutes)
 
 setupSocketAPI(server)
 

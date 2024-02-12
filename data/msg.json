@@ -1,27 +1,29 @@
 {
- "ownerId": "u101",
- "history": {
-  "u102": {
-   "username": "Ulash",
-   "imgUrl": "https://res.cloudinary.com/mistertoysss/image/upload/v1648414285/funday%20must/photo-1618085222100-93f0eecad0aa_fuisxo.jpg",
-   "fullname": "Ulash Ulashi",
-   "msgs": [
-    {
-     "cratedAt": 1651504622095,
-     "content": "Hi, I'm Ulash"
-    }
-   ]
-  },
-  "u103": {
-   "username": "Ulash",
-   "imgUrl": "https://res.cloudinary.com/mistertoysss/image/upload/v1648414285/funday%20must/photo-1618085222100-93f0eecad0aa_fuisxo.jpg",
-   "fullname": "Ulash Ulashi",
-   "msgs": [
-    {
-     "cratedAt": 1651504622095,
-     "content": "Hi, I'm Ulash"
-    }
-   ]
-  }
- }
+    "_id": "u101",
+    "users": [
+        {
+            "_id": "65914569df19d32496f22f70",
+            "username": "chen_mordechai1",
+            "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/v1703789224/8ee74727-ff3b-4293-ad21-a0f551a1f36c_qppfii.jpg",
+            "fullname": "Chen Mordechai"
+        },
+        {
+            "_id": "658dee34df19d32496f22f65",
+            "username": "adi.biram",
+            "imgUrl": "https://res.cloudinary.com/dnluclrao/image/upload/t_square/v1703789653/WhatsApp_Image_2023-12-25_at_15.42.14_qvcoxj.jpg",
+            "fullname": "Adi Biram"
+        }
+    ],
+    "history": [
+        {
+            "userId": "65914569df19d32496f22f70",
+            "txt": "hi",
+            "createdAt": 1651504622095
+        },
+        {
+            "userId": "658dee34df19d32496f22f65",
+            "txt": "hi",
+            "createdAt": 1651504622095
+        }
+    ]
 }
