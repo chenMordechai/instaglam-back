@@ -21,7 +21,8 @@ export const userService = {
     removeFollowing,
     addNotificationPost,
     addNotificationUser,
-    updateUserNotification
+    updateUserNotification,
+    addMsgId
 }
 
 async function query(filterBy = {}) {
@@ -299,6 +300,20 @@ async function updateUserNotification(userId) { // seen => true
         return userId
     } catch (err) {
         logger.error(`cannot update user ${userId}`, err)
+        throw err
+    }
+}
+
+async function addMsgId(msgInfo) {
+    try {
+        const user1Id = msgInfo.users[0]._id
+        const user2Id = msgInfo.users[1]._id
+        const collection = await dbService.getCollection('user')
+        await collection.updateOne({ _id: new ObjectId(user1Id) }, { $push: { msgsIds: msgInfo._id } })
+        await collection.updateOne({ _id: new ObjectId(user2Id) }, { $push: { msgsIds: msgInfo._id } })
+        return msgInfo
+    } catch (err) {
+        logger.error(`cannot add msg id`, err)
         throw err
     }
 }

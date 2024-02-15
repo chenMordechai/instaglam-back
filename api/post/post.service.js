@@ -144,14 +144,9 @@ async function add(post) {
     try {
         const postToAdd = { ...post }
         postToAdd.by._id = new ObjectId(postToAdd.by._id)
-        // const postToAdd = {
-        //     byUserId: new ObjectId(post.byUserId),
-        //     aboutToyId: new ObjectId(post.aboutToyId),
-        //     txt: post.txt
-        // }
         const collection = await dbService.getCollection('post')
-        await collection.insertOne(post)
-        return post
+        await collection.insertOne(postToAdd)
+        return postToAdd
     } catch (err) {
         logger.error('cannot insert post', err)
         throw err

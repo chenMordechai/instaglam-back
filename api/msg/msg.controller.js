@@ -2,6 +2,7 @@ import { msgService } from './msg.service.js'
 import { logger } from '../../services/logger.service.js'
 
 import mongodb from 'mongodb'
+import { userService } from '../user/user.service.js'
 const { ObjectId } = mongodb
 
 export async function getMsgById(req, res) {
@@ -17,33 +18,22 @@ export async function getMsgById(req, res) {
 }
 
 export async function addMsg(req, res) {
-    console.log('addMsg')
-    // const { loggedinUser } = req
-    // try {
-    //     const post = req.body
-    //     post.by = loggedinUser
-    //     post.createdAt = Date.now()
-    //     const addedPost = await postService.add(post)
+    const { loggedinUser } = req
+    try {
+        const userToChat = req.body
+        const msgInfo = {
+            users: [userToChat, loggedinUser],
+            history: []
+        }
+        const addedMsgInfo = await msgService.addMsg(msgInfo)
 
-    //     if (post.type.includes('image')) {
 
-    //         const postMini = {
-    //             commentCount: post.commentCount,
-    //             imgUrl: post.imgUrl,
-    //             likeCount: post.likeCount,
-    //             _id: new ObjectId(addedPost._id),
-    //             type: post.type,
-    //             url: post.url,
+        // update the users in the msgId
+        await userService.addMsgId(addedMsgInfo)
 
-    //         }
-    //         const updatedUser = await userService.updatePost(postMini, post.by._id)
-    //     }
-
-    //     socketService.broadcast({ type: 'post-added', data: addedPost, userId: loggedinUser._id })
-
-    //     res.json(addedPost)
-    // } catch (err) {
-    //     logger.error('Failed to add post', err)
-    //     res.status(500).send({ err: 'Failed to add post' })
-    // }
+        res.json(addedMsgInfo)
+    } catch (err) {
+        logger.error('Failed to add msg', err)
+        res.status(500).send({ err: 'Failed to add msg' })
+    }
 }

@@ -1,4 +1,5 @@
 import { logger } from './logger.service.js'
+import { msgService } from '../api/msg/msg.service.js'
 import { Server } from 'socket.io'
 
 var gIo = null
@@ -30,28 +31,28 @@ export function setupSocketAPI(http) {
         })
         // Join socket to a room
         socket.on('chat-set-topic', topic => {
+            console.log('chat-set-topic')
             if (socket.myTopic === topic) return
             if (socket.myTopic) {
-                // When visiting another toy, remove the prev "room"
+                // When visiting another user char, remove the prev "room"
                 socket.leave(socket.myTopic)
                 logger.info(`Socket is leaving topic ${socket.myTopic} [id: ${socket.id}]`)
             }
             socket.join(topic)
-            // Save the toyId on this specific user socket for later use
+            // Save the chatId on this specific user socket for later use
             socket.myTopic = topic
         })
-        socket.on('chat-send-msg', msg => {
+        socket.on('chat-send-msg', async msg => {
             logger.info(`New chat msg from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`)
-            // emits to all sockets:
-            // gIo.emit('chat-add-msg', msg)
             // emits only to sockets in the same room
-            storyService.addMsgToChat(msg, socket.myTopic)
-
-            broadcast({ type: 'chat-add-msg', data: msg, room: socket.myTopic })
+            const addedMsg = await msgService.addMsgToHistory(msg, socket.myTopic)
+            console.log('addedMsg:', addedMsg)
+            broadcast({ type: 'chat-add-msg', data: addedMsg, room: socket.myTopic })
             // gIo.to(socket.myTopic).emit('chat-add-msg', msg)
         })
 
         socket.on('chat-user-typing', user => {
+            console.log('chat-user-typing')
             logger.info(`User is typing from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`)
             // emits only to xockets in the same room except the user
             broadcast({ type: 'chat-add-typing', data: user.fullname, room: socket.myTopic, userId: user._id })
@@ -118,7 +119,6 @@ async function broadcast({ type, data, room = null, userId = '' }) {
         logger.info(`Broadcast to all excluding user: ${userId}`)
         excludedSocket.broadcast.emit(type, data)
     } else if (room) {
-
         logger.info(`Emit to room: ${room}`)
         gIo.to(room).emit(type, data)
     } else {
