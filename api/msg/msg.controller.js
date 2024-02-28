@@ -1,9 +1,24 @@
+import mongodb from 'mongodb'
+const { ObjectId } = mongodb
+
 import { msgService } from './msg.service.js'
+import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
 
-import mongodb from 'mongodb'
-import { userService } from '../user/user.service.js'
-const { ObjectId } = mongodb
+export async function getMsgs(req, res) {
+    console.log('getMsgs')
+    try {
+        const { userId } = req.query
+        console.log('userId:', userId)
+
+        const filterBy = { userId }
+        const msgs = await msgService.query(filterBy)
+        res.send(msgs)
+    } catch (err) {
+        logger.error('Failed to get msgs', err)
+        res.status(500).send({ err: 'Failed to get msgs' })
+    }
+}
 
 export async function getMsgById(req, res) {
     console.log('getMsgById')

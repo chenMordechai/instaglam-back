@@ -48,13 +48,21 @@ export function setupSocketAPI(http) {
             const addedMsg = await msgService.addMsgToHistory(msg, socket.myTopic)
             console.log('addedMsg:', addedMsg)
             broadcast({ type: 'chat-add-msg', data: addedMsg, room: socket.myTopic })
+
+            // emits only to sockets in the same room except the user
+            // broadcast({ type: 'user-got-msg', data: addedMsg, room: socket.myTopic, userId: addedMsg.userId })
+
             // gIo.to(socket.myTopic).emit('chat-add-msg', msg)
+        })
+        socket.on('user-got-msg', userId => {
+            logger.info(`user-got-msg ${userId}`)
+            socketService.emitToUser({ type: 'user-get-msg', userId })
         })
 
         socket.on('chat-user-typing', user => {
             console.log('chat-user-typing')
             logger.info(`User is typing from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`)
-            // emits only to xockets in the same room except the user
+            // emits only to sockets in the same room except the user
             broadcast({ type: 'chat-add-typing', data: user.fullname, room: socket.myTopic, userId: user._id })
             // socket.broadcast.to(socket.myTopic).emit('chat-add-typing', user)
         })
@@ -93,7 +101,7 @@ function emitTo({ type, data, label }) {
     else gIo.emit(type, data)
 }
 
-async function emitToUser({ type, data, userId }) {
+async function emitToUser({ type, data = '', userId }) {
     userId = userId?.toString()
     const socket = await _getUserSocket(userId)
 

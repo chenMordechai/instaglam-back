@@ -8,8 +8,21 @@ export const msgService = {
     getById,
     addMsgToHistory,
     addMsg,
+    query
 
 }
+
+async function query(filterBy = {}) {
+    try {
+        const collection = await dbService.getCollection('msg')
+        var msgs = await collection.find({'users._id':filterBy.userId}).toArray()
+        return msgs
+    } catch (err) {
+        logger.error('cannot find msgs', err)
+        throw err
+    }
+}
+
 
 async function getById(msgId) {
     console.log('getById')
