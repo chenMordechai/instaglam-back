@@ -25,14 +25,13 @@ async function query(filterBy = {}) {
 
 
 async function getById(msgId) {
-    console.log('getById')
     try {
         const collection = await dbService.getCollection('msg')
         const msg = await collection.findOne({ _id: new ObjectId(msgId) })
         return msg
 
     } catch (err) {
-        logger.error(`while finding toy ${msgId}`, err)
+        logger.error(`while finding msg ${msgId}`, err)
         throw err
     }
 }
