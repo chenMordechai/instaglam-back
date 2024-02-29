@@ -54,7 +54,6 @@ async function addMsgToHistory(newMsg, msgId) {
     try {
         newMsg._id = utilService.makeId()
         newMsg.createdAt = Date.now()
-        console.log('newMsg:', newMsg)
         const collection = await dbService.getCollection('msg')
         await collection.updateOne({ _id: new ObjectId(msgId) }, { $push: { history: newMsg } })
         return newMsg

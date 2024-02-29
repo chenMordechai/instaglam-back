@@ -6,11 +6,8 @@ import { userService } from '../user/user.service.js'
 import { logger } from '../../services/logger.service.js'
 
 export async function getMsgs(req, res) {
-    console.log('getMsgs')
     try {
         const { userId } = req.query
-        console.log('userId:', userId)
-
         const filterBy = { userId }
         const msgs = await msgService.query(filterBy)
         res.send(msgs)
@@ -41,7 +38,6 @@ export async function addMsg(req, res) {
             history: []
         }
         const addedMsgInfo = await msgService.addMsg(msgInfo)
-
 
         // update the users in the msgId
         await userService.addMsgId(addedMsgInfo)
