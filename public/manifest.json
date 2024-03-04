@@ -9,9 +9,9 @@
     "icons": [
         {
             "src": "maskable.png",
-            "sizes": "196x196",
+            "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "maskable"
         },
         {
             "src": "logo192.png",
@@ -32,6 +32,20 @@
             "src": "logo512.png",
             "sizes": "512x512",
             "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot1.png",
+            "type": "image/png",
+            "sizes": "540x720",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "screenshot2.png",
+            "type": "image/png",
+            "sizes": "1891x882",
+            "form_factor": "wide"
         }
     ]
 }
