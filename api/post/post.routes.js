@@ -8,7 +8,7 @@ export const postRoutes = express.Router()
 // middleware that is specific to this router
 
 postRoutes.get('/', log, getPosts)
-postRoutes.get('/:id', getPostById)
+postRoutes.get('/:id', getPostById) // :id=> params
 postRoutes.post('/', requireAuth, addPost)
 postRoutes.put('/:id', requireAuth, updatePost)
 postRoutes.delete('/:id', requireAuth, removePost)
