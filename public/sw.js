@@ -46,3 +46,7 @@ self.addEventListener('activate', (event) => {
     )
 });
 
+self.addEventListener('push', (event) => {
+    // console.log('Push Received')
+    // event.waitUntil(self.registration.showNotification('Hello World'));
+})
